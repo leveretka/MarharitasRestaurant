@@ -1,6 +1,10 @@
 package ua.company.nedzelska.domain;
 
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
+
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
 
 /**
  * Created by margarita on 01.09.15.
@@ -15,9 +19,12 @@ public class Contact {
     @Column(name = "CONTACT_ID")
     private Long id;
 
+    @Pattern(regexp = "^[0-9+\\-\\s]+$", message = "Wrong telephone number")
     @Column(name = "TELEPHONE")
     private String tel;
 
+    @NotEmpty(message = "Email required")
+    @Email(message = "Wrong E-mail")
     @Column(name = "E_MAIL")
     private String email;
 

@@ -1,7 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -17,41 +17,44 @@
 
 </head>
 <body>
-<fmt:setBundle basename="text" var="lang"/>
-<fmt:setLocale value="en_US"/>
-
 <div class="wrapper">
-  <h1>ALL MEALS</h1>
-  </form>
-  <br><br>
+  <h1><spring:message code="MEALS"/></h1>
+  <a href="?locale=en">en</a>
+  <a href="?locale=uk">uk</a>
+  <c:set var="loc" value="${pageContext.response.locale}"/>
+<br><br>
   <table border="1">
     <thead>
-    <th><fmt:message key="name" bundle="${lang}"/></th>
-    <th>TYPE</th>
-    <th><fmt:message key="out" bundle="${lang}"/></th>
-    <th><fmt:message key="measureType" bundle="${lang}"/></th>
-    <th><fmt:message key="price" bundle="${lang}"/></th>
+    <th><spring:message code="name"/></th>
+    <th><spring:message code="mealType"/></th>
+    <th><spring:message code="out"/></th>
+    <th><spring:message code="measureType"/> </th>
+    <th><spring:message code="price"/></th>
+    <th><spring:message code="ua"/></th>
     </thead>
     <c:forEach var="meal" items="${meals}">
       <tr>
         <td>${meal.name}</td>
-        <td>${meal.mealType}</td>
+        <td><spring:message code="${meal.mealType.toString().toLowerCase()}"/></td>
         <td>${meal.out}</td>
-        <td>${meal.measureType}</td>
+        <td><spring:message code="${meal.measureType}"/></td>
         <td>${meal.price}</td>
+        <td>${meal.nameUa}</td>
         <td>
           <sec:authorize access="hasRole('ROLE_ADMIN')">
+            <spring:message code="edit" var="edit"/>
             <form action="/restaurant/jsp/admin/meal/editmeal" method="post">
               <input type="hidden" name="mealid" value="${meal.id}" />
-              <input type="submit" name ="send" value="edit" />
+              <input type="submit" name ="send" value="${edit}" />
               <input type="hidden"
                      name="${_csrf.parameterName}"
                      value="${_csrf.token}"/>
             </form>
             </form>
+            <spring:message code="remove" var="remove"/>
             <form action="/restaurant/jsp/admin/meal/removemeal" method="post">
               <input type="hidden" name="mealid" value="${meal.id}" />
-              <input type="submit" name ="send" value="remove" />
+              <input type="submit" name ="send" value="${remove}" />
               <input type="hidden"
                      name="${_csrf.parameterName}"
                      value="${_csrf.token}"/>
@@ -63,8 +66,22 @@
     </c:forEach>
   </table>
 
-  <a href="/restaurant/jsp/admin/meal/create/">Add new meal</a>
+  <div class="down">
+  <a href="/restaurant/jsp/admin/meal/create/"><spring:message code="newMeal"/></a>
+    <br>
+  <a href="/restaurant/"><spring:message code="home"/></a>
 
+  <c:url var="logoutUrl" value="/logout"/>
+  <spring:message code="log_out" var="logout"/>
+  <sec:authorize access="isFullyAuthenticated()">
+    <form method="post" action="${logoutUrl}">
+      <input type="submit" value="${logout}" />
+      <input type="hidden"
+             name="${_csrf.parameterName}"
+             value="${_csrf.token}"/>
+    </form>
+  </sec:authorize>
+</div>
 </div>
 </body>
 </html>

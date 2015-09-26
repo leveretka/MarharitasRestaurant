@@ -1,5 +1,7 @@
 package ua.company.nedzelska.domain;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 import javax.persistence.*;
 
 /**
@@ -20,12 +22,15 @@ public class Address {
     @Column(name = "DISTRICT")
     private String district;
 
+    @NotEmpty(message = "City required")
     @Column(name = "CITY")
     private String city;
 
+    @NotEmpty(message = "Street required")
     @Column(name = "STREET")
     private String street;
 
+    @NotEmpty(message = "Building required")
     @Column(name = "BUILDING")
     private String building;
 
@@ -102,14 +107,9 @@ public class Address {
 
     @Override
     public String toString() {
-        return "Address{" +
-                " area='" + area + '\'' +
-                ", district='" + district + '\'' +
-                ", city='" + city + '\'' +
-                ", street='" + street + '\'' +
-                ", building='" + building + '\'' +
-                ", apartment='" + apartment + '\'' +
-                '}';
+        return area  + ", " + district + ", " + city  +
+                ", " + street + ", " + building + ", "
+                + apartment + ".";
     }
 
     @Override

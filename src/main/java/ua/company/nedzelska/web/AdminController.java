@@ -1,14 +1,14 @@
 package ua.company.nedzelska.web;
 
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import ua.company.nedzelska.domain.*;
-import org.apache.log4j.Logger;
+
+import java.util.List;
 
 /**
  * Created by margarita on 03.09.15.
@@ -19,6 +19,9 @@ public class AdminController extends AbstractController{
 
     private static final Logger logger = Logger.getLogger(AdminController.class);
 
+    @Autowired
+    EntityValidator entityValidator;
+
     @Secured("ROLE_ADMIN")
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String administrate () {
@@ -27,10 +30,10 @@ public class AdminController extends AbstractController{
 
 
     @Secured("ROLE_ADMIN")
-    @RequestMapping(value = "/admintype", method = RequestMethod.POST)
-    public String switchAdminType(Model model, @RequestParam String type) {
+    @RequestMapping(value = "/{type}", method = RequestMethod.GET)
+    public String switchAdminType(Model model, @PathVariable(value = "type") String type) {
 
-        switch (type) {
+        switch (type.toUpperCase()) {
 
             case "MEALS":
                 return "redirect:meal/";
@@ -140,6 +143,13 @@ public class AdminController extends AbstractController{
     }
 
     @Secured("ROLE_ADMIN")
+    @RequestMapping(value = "/order/details", method = RequestMethod.POST)
+    public String detailOrder(@RequestParam("orderid") Order order, Model model) {
+        model.addAttribute("order", order);
+        return "order";
+
+    }
+    @Secured("ROLE_ADMIN")
     @RequestMapping(value = "/cust", method =RequestMethod.GET)
     public String viewCustomers(Model model) {
         model.addAttribute("customers", customerService.getAllCustomers());
@@ -157,8 +167,7 @@ public class AdminController extends AbstractController{
     @RequestMapping(value = "/cust/removecust", method = RequestMethod.POST)
     public String removeCustomer(Model model, @RequestParam("custid") Customer customer) {
         customerService.remove(customer);
-        model.addAttribute("customers", customerService.getAllCustomers());
-        return "customers";
+        return "redirect:/jsp/admin/cust";
     }
 
     @Secured("ROLE_ADMIN")
@@ -167,6 +176,9 @@ public class AdminController extends AbstractController{
                                  @ModelAttribute Address address, @ModelAttribute AccumulativeCard accumulativeCard,
                                  @ModelAttribute User user, Model model) {
 
+        List<String> errors = entityValidator.validate(newCustomer, user, contact, address);
+
+
         Customer old = customerService.getCustomerById(newCustomer.getId());
 
         if (old != null) {
@@ -174,18 +186,40 @@ public class AdminController extends AbstractController{
             address.setId(old.getAddress().getId());
             contact.setId(old.getContact().getId());
             user.setId(old.getUser().getId());
+
+            newCustomer.setAccumulativeCard(accumulativeCard);
+            newCustomer.setAddress(address);
+            newCustomer.setContact(contact);
+            newCustomer.setUser(user);
+
+            if (errors.size() != 0) {
+                model.addAttribute("customer", newCustomer);
+                model.addAttribute("errors", errors);
+                return "newcust";
+            }
+
         } else {
+            user.setEnabled(true);
+            if (user.getPass() == null || user.getPass().equals("")) {
+               user.setPass("1");
+            }
+            newCustomer.setAccumulativeCard(accumulativeCard);
+            newCustomer.setAddress(address);
+            newCustomer.setContact(contact);
+            newCustomer.setUser(user);
+
+            if (errors.size() != 0) {
+                model.addAttribute("customer", newCustomer);
+                model.addAttribute("errors", errors);
+                return "newcust";
+            }
+
             logger.info("Saving new customer " + user.getName() + ".");
         }
 
-        newCustomer.setAccumulativeCard(accumulativeCard);
-        newCustomer.setAddress(address);
-        newCustomer.setContact(contact);
-        newCustomer.setUser(user);
 
         customerService.addCustomer(newCustomer);
-        model.addAttribute("customers", customerService.getAllCustomers());
-        return "customers";
+        return "redirect:/jsp/admin/cust";
     }
 
 

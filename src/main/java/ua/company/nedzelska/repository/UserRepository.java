@@ -14,4 +14,7 @@ public interface UserRepository extends Repository<User, Long> {
     User save(User user);
 
     User findUserByName(String name);
+
+    @Transactional
+    void delete(User user);
 }

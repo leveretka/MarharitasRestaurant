@@ -14,4 +14,7 @@ public interface AccumulativeCardRepository extends Repository<AccumulativeCard,
     AccumulativeCard save(AccumulativeCard accumulativeCard);
 
     AccumulativeCard findAccumulativeCardById(Long id);
+
+    @Transactional
+    void delete(AccumulativeCard accumulativeCard);
 }

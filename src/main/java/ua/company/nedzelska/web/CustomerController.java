@@ -15,6 +15,8 @@ import ua.company.nedzelska.domain.*;
 import ua.company.nedzelska.repository.OrderRepository;
 import ua.company.nedzelska.service.CustomerService;
 
+import java.util.List;
+
 /**
  * Created by margarita on 03.09.15.
  */
@@ -30,6 +32,8 @@ public class CustomerController {
     private CustomerService customerService;
     @Autowired
     private OrderRepository orderRepository;
+    @Autowired
+    private EntityValidator registrationValidator;
 
     @ModelAttribute("customer")
     public Customer populateCustomer() {
@@ -42,6 +46,8 @@ public class CustomerController {
                            @ModelAttribute Address address, @ModelAttribute AccumulativeCard accumulativeCard,
                            @ModelAttribute User user, @ModelAttribute("customer") Customer customer, Model model) {
 
+        List<String> errors = registrationValidator.validate(newCustomer, user, contact, address);
+
         if (customer != null && customer.getId() != null) {
 
             accumulativeCard.setId(customer.getAccumulativeCard().getId());
@@ -51,6 +57,16 @@ public class CustomerController {
 
             newCustomer.setId(customer.getId());
 
+            if (errors.size() != 0) {
+                model.addAttribute("errors", errors);
+                model.addAttribute("customer", customer);
+                model.addAttribute("orders", orderRepository.findOrdersByCustomer(customer));
+                return "cabinet";
+            }
+
+        } else if (errors.size() != 0) {
+            model.addAttribute("errors", errors);
+            return "registration";
         }
 
         newCustomer.setAccumulativeCard(accumulativeCard);

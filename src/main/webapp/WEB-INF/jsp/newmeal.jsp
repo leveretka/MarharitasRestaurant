@@ -8,7 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
-
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%--<jsp:useBean id="type" type="MealType" />--%>
 <%--<jsp:useBean id="measureType" type="MeasureType" />--%>
 
@@ -25,39 +25,51 @@
 
 </head>
 <body>
-    <h1>Meal ${meal.name}</h1>
+<div class="editor">
+    <h1><spring:message code="meal"/> ${meal.name}</h1>
+    <c:set var="loc" value="${pageContext.response.locale}"/>
 
     <form action="/restaurant/jsp/admin/meal/addnew/" method="post">
 
         <input type="hidden" name="id" value="${meal.id}"/>
 
-        NAME : <input type="text" name="name" value="${meal.name}"/>
+        <spring:message code="name"/> : <input type="text" name="name" value="${meal.name}"/>
         <br>
-        TYPE :
+        <spring:message code="mealType"/> :
         <select name="mealType">
+            <c:if test="${meal.id != null}">
+                <option selected="selected"><spring:message code="${meal.mealType.toString().toLowerCase()}"/></option>
+            </c:if>
             <c:forEach items="${types}" var="item">
-                <option value="${item}">${item}</option>
+                <option value="${item}"><spring:message code="${item.toString().toLowerCase()}"/></option>
             </c:forEach>
 
         </select>
         <br>
-        OUT : <input type="number" name="out" value="${meal.out}"/>
+        <spring:message code="out"/> : <input type="number" name="out" value="${meal.out}"/>
         <br>
-        MEASURE :
+        <spring:message code="measureType"/> :
         <select name="measureType">
+        <c:if test="${meal.id != null}">
+            <option selected="selected"><spring:message code="${meal.measureType}"/></option>
+        </c:if>
             <c:forEach items="${measures}" var="item">
-                <option value="${item}">${item}</option>
+                <option value="${item}"><spring:message code="${item}"/></option>
             </c:forEach>
 
         </select>
         <br>
-        PRICE : <input type="number" name="price" value="${meal.price}"/>
+        <spring:message code="price"/> : <input type="number" name="price" value="${meal.price}"/>
         </br>
-        <input type="submit" value="save"/>
+
+        <spring:message code="ua"/> : <input type="text" name="nameUa" value="${meal.nameUa}"/>
+        </br>
+        <spring:message code="save" var="save"/>
+        <input type="submit" value="${save}"/>
         <input type="hidden"
                name="${_csrf.parameterName}"
                value="${_csrf.token}"/>
     </form>
-
+</div>
 </body>
 </html>

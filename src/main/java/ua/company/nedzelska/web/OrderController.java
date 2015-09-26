@@ -2,6 +2,7 @@ package ua.company.nedzelska.web;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -13,6 +14,7 @@ import ua.company.nedzelska.service.OrderService;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by margarita on 04.09.15.
@@ -28,6 +30,8 @@ public class OrderController extends AbstractController{
     private OrderService orderService;
     @Autowired
     private CustomerService customerService;
+    @Autowired
+    private EntityValidator entityValidator;
 
     @ModelAttribute("mealsInOrder")
     public HashMap<Meal, Integer> populateMealsInOrder() {
@@ -35,7 +39,7 @@ public class OrderController extends AbstractController{
     }
 
     @RequestMapping(value = "/addmeal", method = RequestMethod.POST)
-    public String addMealToCart(@RequestParam("mealid") Meal meal, @ModelAttribute("mealsInOrder") HashMap<Meal, Integer> mealsInOrder, Model model) {
+    public String addMealToCart(@RequestParam("mealid") Meal meal, @RequestParam("redirect") String redirect, @ModelAttribute("mealsInOrder") HashMap<Meal, Integer> mealsInOrder, Model model) {
 
 
         if  (mealsInOrder == null) {
@@ -49,7 +53,7 @@ public class OrderController extends AbstractController{
 
         model.addAttribute("mealsInOrder", mealsInOrder);
 
-        return "redirect:/jsp/meal/";
+        return "redirect:/jsp/" + redirect;
     }
 
     @RequestMapping(value = "/previewOrder", method = RequestMethod.POST)
@@ -112,6 +116,22 @@ public class OrderController extends AbstractController{
     @RequestMapping(value = "/submitorder", method = RequestMethod.POST)
     public String submitOrder(@ModelAttribute Contact contact, @ModelAttribute Address address,@ModelAttribute("mealsInOrder") HashMap<Meal, Integer> mealsInOrder, Model model) {
 
+        List<String> errors = entityValidator.validate(contact, address);
+        if (errors.size() != 0) {
+
+            Authentication authentication =  SecurityContextHolder.getContext().getAuthentication();
+            String name = authentication.getName();
+            Customer customer = customerService.getCustomerByUserName(name);
+
+
+            Order order = new Order(mealsInOrder, new Date(), customer, address, contact);
+            order.calcPrice();
+
+            model.addAttribute("order", order);
+            model.addAttribute("errors", errors);
+            return "bucket";
+
+        }
         Authentication authentication =  SecurityContextHolder.getContext().getAuthentication();
         String name = authentication.getName();
         Customer customer = customerService.getCustomerByUserName(name);
@@ -120,7 +140,7 @@ public class OrderController extends AbstractController{
 
         model.addAttribute("meals", mealService.getAllMeals());
         model.addAttribute("mealsInOrder", new HashMap<>());
-        return "menu";
+        return "ordersuccess";
 
     }
 
@@ -144,4 +164,24 @@ public class OrderController extends AbstractController{
         return "redirect:/jsp/cust/cabinet";
 
     }
+
+    @Secured("ROLE_USER")
+    @RequestMapping(value = "/{orderid}", method = RequestMethod.GET)
+    public String detailOrder(@PathVariable("orderid") Long id, Model model) {
+
+        Order order = orderService.getOrderById(id);
+
+        Authentication authentication =  SecurityContextHolder.getContext().getAuthentication();
+        String name = authentication.getName();
+        Customer customer = customerService.getCustomerByUserName(name);
+
+        if (order == null || order.getCustomer() == null || !customer.getId().equals(order.getCustomer().getId())) {
+            return "error403";
+        }
+
+        model.addAttribute("order", order);
+        return "order";
+
+    }
+
 }

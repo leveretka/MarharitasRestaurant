@@ -9,7 +9,7 @@ import java.util.Map;
 public class PriceCalculator {
 
     public static double calc(Map<Meal, Integer> meals, double accumulativeSum) {
-        if (meals == null || meals.size() == 0 || accumulativeSum < 0) {
+        if (meals == null || accumulativeSum < 0) {
             throw new IllegalArgumentException();
         }
 
@@ -27,9 +27,6 @@ public class PriceCalculator {
             }
 
             totalQnt += amm;
-            if (totalQnt > 10) {
-                throw new IllegalArgumentException();
-            }
 
             Meal meal = mealInOrder.next();
 
@@ -37,6 +34,9 @@ public class PriceCalculator {
 
         }
 
+        if (accumulativeSum < 0.01) {
+            return total;
+        }
         if (accumulativeSum < 1000) {
             total *= 0.99;
         } else if (accumulativeSum < 2000) {

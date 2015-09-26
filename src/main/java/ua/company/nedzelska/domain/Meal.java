@@ -1,6 +1,9 @@
 package ua.company.nedzelska.domain;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * Created by margarita on 01.09.15.
@@ -15,23 +18,32 @@ public class Meal {
     @Column(name = "MEAL_ID")
     private Long id;
 
+    @NotNull
     @Column(name = "NAME")
     private String name;
 
+    @NotNull
+    @Min(value = 1)
     @Column(name = "MEAL_PRICE")
     private Double price;
 
+    @NotNull
+    @Min(value = 35)
     @Column(name = "OUT")
     private Double out;
 
+    @NotNull
     @Column(name = "MEASURE_TYPE")
     @Enumerated(EnumType.STRING)
     private MeasureType measureType;
 
+    @NotNull
     @Column(name = "MEAL_TYPE")
     @Enumerated(EnumType.STRING)
     private MealType mealType;
 
+    @NotNull
+    @Size(min = 2, max = 30)
     @Column(name = "NAME_UA")
     private String nameUa;
 

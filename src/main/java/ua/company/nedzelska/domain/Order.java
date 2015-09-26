@@ -4,6 +4,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.Map;
 
@@ -23,12 +25,14 @@ public class Order {
     @Column(name = "ORDER_ID")
     private Long id;
 
+    @NotNull
     @ElementCollection
     @JoinTable(name="ORDER_MEALS", joinColumns=@JoinColumn(name="ORDER_ID"))
     @MapKeyColumn(name="MEAL_ID")
     @Column(name="QUANTITY")
     private Map<Meal, Integer> meals;
 
+    @Min(value = 0)
     @Column(name = "ORDER_PRICE")
     private Double price;
 

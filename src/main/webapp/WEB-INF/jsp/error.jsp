@@ -17,5 +17,6 @@
     <body>
         <h1>Error happened</h1>
         <h2>${ex}</h2>
+        <h3>${ex.printStackTrace()}</h3>
     </body>
 </html>

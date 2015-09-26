@@ -8,10 +8,11 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <html>
 <head>
-    <title>Cabinet</title>
+    <title><spring:message code="cabinet"/> </title>
     <link href="/restaurant/resources/favicon.ico" rel="shortcut icon" />
 
     <link href='http://fonts.googleapis.com/css?family=Droid+Serif' rel='stylesheet' type='text/css'>
@@ -24,20 +25,25 @@
 <body>
 <div id="carte">
 <div id="main">
-    <h2>My Orders</h2>
+    <h2><spring:message code="my_ords"/></h2>
     <br>
+    <c:if test="${errors == null}">
+        <a href="?locale=en">en</a>
+        <a href="?locale=uk">uk</a>
+    </c:if>
+    <c:set var="loc" value="${pageContext.response.locale}"/>
 
+    <table border="1">
+        <thead>
+        <th><spring:message code="phone"/></th>
+        <th><spring:message code="e-mail"/> </th>
+        <th><spring:message code="address"/></th>
+        <th><spring:message code="date"/></th>
+        <th><spring:message code="totalCost"/></th>
+        <th><spring:message code="status"/></th>
+        </thead>
     <c:forEach var="order" items="${orders}">
 
-        <table border="2">
-            <thead>
-            <th>TELEPHONE</th>
-            <th>E-MAIL</th>
-            <th>ADDRESS</th>
-            <th>DATE</th>
-            <th>TOTAL COST</th>
-            <th>STATUS</th>
-            </thead>
 
             <tr>
                 <td>${order.contact.tel}</td>
@@ -45,95 +51,118 @@
                 <td>${order.address}</td>
                 <td>${order.date}</td>
                 <td>${order.price}</td>
-                <td>${order.status}</td>
+                <td><spring:message code="${order.status}"/></td>
                 <td>
+                    <spring:message code="cancel" var="cancel"/>
                     <c:if test="${order.status == 'NEW' or order.status == 'ACCEPTED'}">
                         <form action="/restaurant/jsp/order/cancelorder" method="post">
                             <input type="hidden" name="orderid" value="${order.id}">
-                            <input type="submit" value="cancel">
+                            <input type="submit" value="${cancel}">
                             <input type="hidden"
                                    name="${_csrf.parameterName}"
                                    value="${_csrf.token}"/>
                         </form>
                     </c:if>
 
+                    <spring:message code="resend" var="resend"/>
                     <c:if test="${order.status == 'DECLINED' or order.status == 'CANCELLED'}">
                         <form action="/restaurant/jsp/order/resendorder" method="post">
                             <input type="hidden" name="orderid" value="${order.id}">
-                            <input type="submit" value="resend">
+                            <input type="submit" value="${resend}">
                             <input type="hidden"
                                    name="${_csrf.parameterName}"
                                    value="${_csrf.token}"/>
                         </form>
                     </c:if>
+                    <c:set var="action" value="/restaurant/jsp/order/${order.id}" />
+                    <a href="${action}"><spring:message code="details"/></a>
+                    <%--<form action="${action}" method="get">--%>
+                        <%--<input type="submit" value="details">--%>
+                        <%--<input type="hidden"--%>
+                               <%--name="${_csrf.parameterName}"--%>
+                               <%--value="${_csrf.token}"/>--%>
+                    <%--</form>--%>
+
+
 
                 </td>
-                <table border="1">
-                    <thead><tr>
-                        <th>MEAL</th>
-                        <th>TYPE</th>
-                        <th>OUT</th>
-                        <th>MEASURE</th>
-                        <th>PRICE</th>
-                        <th>QUANTITY</th>
-                    </tr></thead>
+                <%--<table border="1">--%>
+                    <%--<thead><tr>--%>
+                        <%--<th>MEAL</th>--%>
+                        <%--<th>TYPE</th>--%>
+                        <%--<th>OUT</th>--%>
+                        <%--<th>MEASURE</th>--%>
+                        <%--<th>PRICE</th>--%>
+                        <%--<th>QUANTITY</th>--%>
+                    <%--</tr></thead>--%>
 
-                    <c:forEach var="entry" items="${order.meals}">
-                        <tr>
-                            <td>${entry.key.name}</td>
-                            <td>${entry.key.mealType}</td>
-                            <td>${entry.key.out}</td>
-                            <td>${entry.key.measureType}</td>
-                            <td>${entry.key.price}</td>
-                            <td>${entry.value}</td>
-                        </tr>
+                    <%--<c:forEach var="entry" items="${order.meals}">--%>
+                        <%--<tr>--%>
+                            <%--<td>${entry.key.name}</td>--%>
+                            <%--<td>${entry.key.mealType}</td>--%>
+                            <%--<td>${entry.key.out}</td>--%>
+                            <%--<td>${entry.key.measureType}</td>--%>
+                            <%--<td>${entry.key.price}</td>--%>
+                            <%--<td>${entry.value}</td>--%>
+                        <%--</tr>--%>
 
-                    </c:forEach>
-                </table>
-        </table>
-        <br>
+                    <%--</c:forEach>--%>
+                <%--</table>--%>
+
+                </tr>
     </c:forEach>
+    </table>
 </div>
 
-    <div id="space"></div>
-
 <div id="personal">
-    <h2>Personal Info</h2>
+    <h2><spring:message code="personal"/></h2>
     <form action="/restaurant/jsp/cust/addnew/" method="post">
 
         <input type="hidden" name="id" value="${customer.id}"/>
 
-        FIRST NAME : <input type="text" name="firstName" value="${customer.firstName}"/>
+        <spring:message code="firstName"/> : <input type="text" name="firstName" value="${customer.firstName}"/>
         <br>
-        LAST NAME : <input type="text" name="lastName" value="${customer.lastName}"/>
+        <spring:message code="lastName"/> : <input type="text" name="lastName" value="${customer.lastName}"/>
         <br>
-        LOGIN : <input type="text" name="name" value="${customer.user.name}"/>
+        <spring:message code="LOGIN"/> : <input type="text" name="name" value="${customer.user.name}"/>
         <br>
-        PASSWORD : <input type="password" name="pass" value="${customer.user.pass}"/>
+        <spring:message code="PASS"/> : <input type="password" name="pass" value="${customer.user.pass}"/>
         <br>
-        PHONE : <input type="text" name="tel" value="${customer.contact.tel}"/>
+        <spring:message code="phone"/> : <input type="text" name="tel" value="${customer.contact.tel}"/>
         <br>
-        E-MAIL : <input type="text" name="email" value="${customer.contact.email}"/>
+        <spring:message code="e-mail"/> : <input type="text" name="email" value="${customer.contact.email}"/>
         <br>
-        AREA : <input type="text" name="area" value="${customer.address.area}"/>
+        <spring:message code="area"/> : <input type="text" name="area" value="${customer.address.area}"/>
         <br>
-        DISTRICT : <input type="text" name="district" value="${customer.address.district}"/>
+        <spring:message code="district"/> : <input type="text" name="district" value="${customer.address.district}"/>
         <br>
-        CITY : <input type="text" name="city" value="${customer.address.city}"/>
+        <spring:message code="city"/> : <input type="text" name="city" value="${customer.address.city}"/>
         <br>
-        STREET : <input type="text" name="street" value="${customer.address.street}"/>
+        <spring:message code="street"/> : <input type="text" name="street" value="${customer.address.street}"/>
         <br>
-        BUILDING : <input type="text" name="building" value="${customer.address.building}"/>
+        <spring:message code="building"/> : <input type="text" name="building" value="${customer.address.building}"/>
         <br>
-        APARTMENT : <input type="text" name="apartment" value="${customer.address.apartment}"/>
+        <spring:message code="apartment"/> : <input type="text" name="apartment" value="${customer.address.apartment}"/>
         <br>
-        ACCUMULATED SUM : ${customer.accumulativeCard.sum}
+        <spring:message code="accumulated_sum"/> : ${customer.accumulativeCard.sum}
         <br>
 
-        <input type="hidden" name="sum" value="0"/>
+        <c:if test="${errors != null}">
+            <div id="errors">
+                <ul>
+                    <c:forEach var="error" items="${errors}">
+                        <li>${error}</li>
+                    </c:forEach>
+                </ul>
+            </div>
+        </c:if>
+
+
+        <spring:message code="save" var="save"/>
+        <input type="hidden" name="sum" value="${customer.accumulativeCard.sum}"/>
 
         <input type="hidden" name="enabled" value="TRUE">
-        <input type="submit" value="save"/>
+        <input type="submit" value="${save}"/>
         <input type="hidden"
                name="${_csrf.parameterName}"
                value="${_csrf.token}"/>
@@ -141,10 +170,10 @@
 
 
 </div>
-
+<spring:message code="log_out" var="logout"/>
 <c:url var="logoutUrl" value="/logout"/>
 <form method="post" action="${logoutUrl}">
-  <input type="submit" value="Log out" />
+  <input type="submit" value="${logout}" />
   <input type="hidden"
          name="${_csrf.parameterName}"
          value="${_csrf.token}"/>

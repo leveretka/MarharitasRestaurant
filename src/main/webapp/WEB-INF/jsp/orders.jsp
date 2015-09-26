@@ -8,6 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <html>
 <head>
@@ -22,24 +23,29 @@
 
 </head>
 <body>
-<h1>ALL ORDERS</h1>
+<div class="wrapper">
+    <h1><spring:message code="orders"/> </h1>
 <br>
+<a href="?locale=en">en</a>
+<a href="?locale=uk">uk</a>
+<c:set var="loc" value="${pageContext.response.locale}"/>
+
+<table border="1" id="order_items_table">
+    <thead>
+    <th>ID</th>
+    <th><spring:message code="firstName"/> </th>
+    <th><spring:message code="lastName"/> </th>
+    <th><spring:message code="LOGIN"/></th>
+    <th><spring:message code="phone"/></th>
+    <th><spring:message code="e-mail"/></th>
+    <th><spring:message code="address"/></th>
+    <th><spring:message code="date"/></th>
+    <th><spring:message code="totalCost"/></th>
+    <th><spring:message code="status"/></th>
+    </thead>
 
 <c:forEach var="order" items="${orders}">
 
-<table border="2">
-    <thead>
-        <th>ID</th>
-        <th>FIRST NAME</th>
-        <th>LAST NAME</th>
-        <th>LOGIN</th>
-        <th>TELEPHONE</th>
-        <th>E-MAIL</th>
-        <th>ADDRESS</th>
-        <th>DATE</th>
-        <th>TOTAL COST</th>
-        <th>STATUS</th>
-    </thead>
 
     <tr>
         <td>${order.id}</td>
@@ -51,19 +57,24 @@
         <td>${order.address}</td>
         <td>${order.date}</td>
         <td>${order.price}</td>
-        <td>${order.status}</td>
+        <td><spring:message code="${order.status}"/></td>
         <td>
+            <spring:message code="accept" var="accept"/>
+            <spring:message code="decline" var="decline"/>
+            <spring:message code="details" var="details"/>
+            <spring:message code="deliver" var="deliver"/>
+
             <c:if test="${order.status == 'NEW'}">
                 <form action="/restaurant/jsp/admin/order/acceptorder" method="post">
                     <input type="hidden" name="orderid" value="${order.id}">
-                    <input type="submit" value="accept">
+                    <input type="submit" value="${accept}">
                     <input type="hidden"
                            name="${_csrf.parameterName}"
                            value="${_csrf.token}"/>
                 </form>
                 <form action="/restaurant/jsp/admin/order/declineorder" method="post">
                     <input type="hidden" name="orderid" value="${order.id}">
-                    <input type="submit" value="decline">
+                    <input type="submit" value="${decline}">
                     <input type="hidden"
                            name="${_csrf.parameterName}"
                            value="${_csrf.token}"/>
@@ -73,38 +84,55 @@
             <c:if test="${order.status == 'ACCEPTED'}">
                 <form action="/restaurant/jsp/admin/order/deliverorder" method="post">
                     <input type="hidden" name="orderid" value="${order.id}">
-                    <input type="submit" value="deliver">
+                    <input type="submit" value="${deliver}">
                     <input type="hidden"
                            name="${_csrf.parameterName}"
                            value="${_csrf.token}"/>
                 </form>
             </c:if>
+            <form action="/restaurant/jsp/admin/order/details" method="post">
+                <input type="hidden" name="orderid" value="${order.id}">
+                <input type="submit" value="${details}">
+                <input type="hidden"
+                       name="${_csrf.parameterName}"
+                       value="${_csrf.token}"/>
+            </form>
 
         </td>
-        <table border="1">
-            <thead><tr>
-                <th>MEAL</th>
-                <th>TYPE</th>
-                <th>OUT</th>
-                <th>MEASURE</th>
-                <th>PRICE</th>
-                <th>QUANTITY</th>
-            </tr></thead>
+        <%--<table border="1">--%>
+            <%--<thead><tr>--%>
+                <%--<th><spring:message code="name"/></th>--%>
+                <%--<th><spring:message code="mealType"/></th>--%>
+                <%--<th><spring:message code="out"/></th>--%>
+                <%--<th><spring:message code="measureType"/></th>--%>
+                <%--<th><spring:message code="price"/> </th>--%>
+                <%--<th><spring:message code="qnt"/></th>--%>
+            <%--</tr></thead>--%>
 
-            <c:forEach var="entry" items="${order.meals}">
-                <tr>
-                    <td>${entry.key.name}</td>
-                    <td>${entry.key.mealType}</td>
-                    <td>${entry.key.out}</td>
-                    <td>${entry.key.measureType}</td>
-                    <td>${entry.key.price}</td>
-                    <td>${entry.value}</td>
-                </tr>
+            <%--<c:forEach var="entry" items="${order.meals}">--%>
+                <%--<tr>--%>
+                    <%--<td>${entry.key.name}</td>--%>
+                    <%--<td>${entry.key.mealType}</td>--%>
+                    <%--<td>${entry.key.out}</td>--%>
+                    <%--<td>${entry.key.measureType}</td>--%>
+                    <%--<td>${entry.key.price}</td>--%>
+                    <%--<td>${entry.value}</td>--%>
+                <%--</tr>--%>
 
-             </c:forEach>
-        </table>
-    </table>
-    <br>
+             <%--</c:forEach>--%>
+        <%--</table>--%>
+    <%--<br>--%>
 </c:forEach>
+</table>
+<c:url var="logoutUrl" value="/logout"/>
+<sec:authorize access="isFullyAuthenticated()">
+    <form method="post" action="${logoutUrl}">
+        <input type="submit" value="Log out" />
+        <input type="hidden"
+               name="${_csrf.parameterName}"
+               value="${_csrf.token}"/>
+    </form>
+</sec:authorize>
+</div>
 </body>
 </html>

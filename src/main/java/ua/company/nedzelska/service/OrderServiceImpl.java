@@ -34,6 +34,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order placeNewOrder(HashMap<Meal, Integer> mealsInOrder, Date date, Customer customer, Address address, Contact contact) {
 
+
         Order order = new Order();
 
         Address addr = addressRepository.findByAreaAndDistrictAndCityAndStreetAndBuildingAndApartment(address.getArea(),

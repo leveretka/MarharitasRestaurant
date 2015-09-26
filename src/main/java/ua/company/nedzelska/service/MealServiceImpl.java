@@ -34,8 +34,7 @@ public class MealServiceImpl implements MealService {
 
     @Override
     public Long addMeal(Meal newMeal) {
-            return mealRepository.save(newMeal)
-                    .getId();
+            return mealRepository.save(newMeal).getId();
     }
 
     @Override

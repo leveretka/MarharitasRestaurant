@@ -19,14 +19,14 @@
 </head>
 <body>
 
-<div id="wrapper">
+<div class="wrapper">
   <h1><spring:message code="menu" /></h1>
 
   <a href="?locale=en">en</a>
   <a href="?locale=uk">uk</a>
-  <%--<h2>Locale : ${pageContext.request.locale}</h2>--%>
+  <c:set var="loc" value="${pageContext.response.locale}"/>
   <br>
-
+  <div id="buttons-hbox">
   <a href="all"><spring:message code="all"/></a>
   <a href="alcohol"><spring:message code="alcohol"/></a>
   <a href="soft_drink"><spring:message code="soft"/></a>
@@ -36,9 +36,9 @@
   <a href="dessert"><spring:message code="dessert"/></a>
   <a href="soup"><spring:message code="soup"/></a>
   <a href="pizza"><spring:message code="pizza"/></a>
-
+  </div>
   <br><br>
-  <table id="meals" border="1">
+  <table border="1">
     <thead>
       <th><spring:message code="name" /></th>
       <th><spring:message code="price" /></th>
@@ -50,17 +50,18 @@
     </thead>
     <c:forEach var="meal" items="${meals}">
       <tr>
-        <td>${meal.name}</td>
+        <td>${meal.getName(loc)}</td>
         <td>${meal.price}</td>
         <td>${meal.out}</td>
-        <td>${meal.measureType}</td>
+        <td><spring:message code="${meal.measureType}"/></td>
 
         <sec:authorize access="hasRole('ROLE_USER')">
 
         <td>
           <form action="/restaurant/jsp/order/addmeal" method="post">
             <input type="hidden" name="mealid" value="${meal.id}" />
-            <input type="submit" name ="send" value="add" />
+            <input type="submit" name ="send" value=" + " />
+            <input type="hidden" name="redirect" value="meal/">
             <input type="hidden"
                    name="${_csrf.parameterName}"
                    value="${_csrf.token}"/>
@@ -72,7 +73,8 @@
           <td>
             <form action="/restaurant/jsp/order/addmeal" method="post">
               <input type="hidden" name="mealid" value="${meal.id}" />
-              <input type="submit" name ="send" value="add" />
+              <input type="submit" name ="send" value=" + " />
+              <input type="hidden" name="redirect" value="meal/">
               <input type="hidden"
                      name="${_csrf.parameterName}"
                      value="${_csrf.token}"/>
@@ -82,19 +84,23 @@
       </tr>
     </c:forEach>
   </table>
-
+  <spring:message code="preview" var="preview"/>
   <form action="/restaurant/jsp/order/previewOrder" method="post">
-    <input type="submit" value="preview">
+    <input type="submit" value="${preview}">
     <input type="hidden"
            name="${_csrf.parameterName}"
            value="${_csrf.token}"/>
   </form>
 
-
+  <a href="/restaurant/"><spring:message code="home"/></a>
+<sec:authorize access="hasRole('ROLE_USER')">
+  <a href="/restaurant/jsp/cust/cabinet/"><spring:message code="cabinet"/></a>
+</sec:authorize>
   <c:url var="logoutUrl" value="/logout"/>
+  <spring:message code="log_out" var="logout"/>
   <sec:authorize access="isFullyAuthenticated()">
     <form method="post" action="${logoutUrl}">
-      <input type="submit" value="Log out" />
+      <input type="submit" value="${logout}" />
       <input type="hidden"
              name="${_csrf.parameterName}"
              value="${_csrf.token}"/>

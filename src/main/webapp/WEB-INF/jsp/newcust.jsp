@@ -8,7 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
-
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%--<jsp:useBean id="type" type="MealType" />--%>
 <%--<jsp:useBean id="measureType" type="MeasureType" />--%>
 
@@ -25,44 +25,60 @@
 
 </head>
 <body>
-<h1>Customer id : ${customer.id}</h1>
+<div id="carte-1">
+  <div id="registration">
+<h1><spring:message code="customer"/> id : ${customer.id}</h1>
+<c:set var="loc" value="${pageContext.response.locale}"/>
 
 <form action="/restaurant/jsp/admin/cust/addcust/" method="post">
 
   <input type="hidden" name="id" value="${customer.id}"/>
 
-  FIRST NAME : <input type="text" name="firstName" value="${customer.firstName}"/>
+  <spring:message code="firstName"/> : <input type="text" name="firstName" value="${customer.firstName}"/>
   <br>
-  LAST NAME : <input type="text" name="lastName" value="${customer.lastName}"/>
+  <spring:message code="lastName"/> : <input type="text" name="lastName" value="${customer.lastName}"/>
   <br>
-  LOGIN : <input type="text" name="name" value="${customer.user.name}"/>
+  <spring:message code="LOGIN"/> : <input type="text" name="name" value="${customer.user.name}"/>
   <br>
-  PHONE : <input type="text" name="tel" value="${customer.contact.tel}"/>
+  <spring:message code="PASS"/> : <input type="password" name="pass" value="${customer.user.pass}"/>
   <br>
-  E-MAIL : <input type="text" name="email" value="${customer.contact.email}"/>
+  <spring:message code="phone"/> : <input type="text" name="tel" value="${customer.contact.tel}"/>
   <br>
-  AREA : <input type="text" name="area" value="${customer.address.area}"/>
+  <spring:message code="e-mail"/> : <input type="text" name="email" value="${customer.contact.email}"/>
   <br>
-  DISTRICT : <input type="text" name="district" value="${customer.address.district}"/>
+  <spring:message code="area"/> : <input type="text" name="area" value="${customer.address.area}"/>
   <br>
-  CITY : <input type="text" name="city" value="${customer.address.city}"/>
+  <spring:message code="district"/> : <input type="text" name="district" value="${customer.address.district}"/>
   <br>
-  STREET : <input type="text" name="street" value="${customer.address.street}"/>
+  <spring:message code="city"/> : <input type="text" name="city" value="${customer.address.city}"/>
   <br>
-  BUILDING : <input type="text" name="building" value="${customer.address.building}"/>
+  <spring:message code="street"/> : <input type="text" name="street" value="${customer.address.street}"/>
   <br>
-  APARTMENT : <input type="text" name="apartment" value="${customer.address.apartment}"/>
+  <spring:message code="building"/> : <input type="text" name="building" value="${customer.address.building}"/>
   <br>
-  ACCUMULATED SUM : <input type="text" name="sum" value="${customer.accumulativeCard.sum}"/>
+  <spring:message code="apartment"/> : <input type="text" name="apartment" value="${customer.address.apartment}"/>
+  <br>
+  <spring:message code="accumulated_sum"/> : <input type="text" name="sum" value="${customer.accumulativeCard.sum}"/>
   <br>
 
+  <spring:message code="save" var="save"/>
   <input type="hidden" name="pass" value="${customer.user.pass}">
   <input type="hidden" name="enabled" value="${customer.user.enabled}">
-  <input type="submit" value="save"/>
+  <input type="submit" value="${save}"/>
   <input type="hidden"
          name="${_csrf.parameterName}"
          value="${_csrf.token}"/>
 </form>
-
+  </div>
+  <c:if test="${errors != null}">
+    <div id="error-panel">
+      <ul>
+        <c:forEach var="error" items="${errors}">
+          <li>${error}</li>
+        </c:forEach>
+      </ul>
+    </div>
+  </c:if>
+</div>
 </body>
 </html>

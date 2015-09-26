@@ -1,6 +1,7 @@
 package ua.company.nedzelska.domain;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 
 /**
  * Created by margarita on 01.09.15.
@@ -14,9 +15,11 @@ public class Customer {
     @Column(name = "CUSTOMER_ID")
     private Long id;
 
+    @Size(min = 2, message = "First name must consist of more than 2 characters")
     @Column(name = "FIRST_NAME")
     private String firstName;
 
+    @Size(min = 2, message = "Last name must consist of more than 2 characters")
     @Column(name = "LAST_NAME")
     private String lastName;
 
