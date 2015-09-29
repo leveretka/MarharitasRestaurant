@@ -131,11 +131,17 @@ public class AdminController extends AbstractController{
     @Secured("ROLE_ADMIN")
     @RequestMapping(value = "/order/deliverorder", method = RequestMethod.POST)
     public String deliverOrder(@RequestParam("orderid") Order order, Model model) {
-        if (order.getStatus().equals(Order.OrderStatus.ACCEPTED)) {
+        if (order.getCustomer() == null && order.getStatus().equals(Order.OrderStatus.ACCEPTED)) {
+            orderService.deliver(order);
+            logger.info("Delivered order #" + order.getId() + ".");
+            model.addAttribute("orders", orderService.getAllOrders());
+            return "redirect:";
+        }
+        if (order.getStatus().equals(Order.OrderStatus.PAYED)) {
             orderService.deliver(order);
             logger.info("Delivered order #" + order.getId() + ".");
         } else {
-            logger.info("Attempted to deliver not accepted order.");
+            logger.info("Attempted to deliver not payed order.");
         }
         model.addAttribute("orders", orderService.getAllOrders());
         return "redirect:";

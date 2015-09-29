@@ -24,19 +24,6 @@ public class UserTest {
         validator = factory.getValidator();
     }
 
-    @Test
-    public void createUserNullName() {
-
-        User user = new User(null,"111", Boolean.TRUE);
-
-        Set<ConstraintViolation<User>> constraintViolations = validator.validate(user);
-
-        assertEquals(1, constraintViolations.size());
-        assertEquals(
-                "may not be null",
-                constraintViolations.iterator().next().getMessage()
-        );
-    }
 
     @Test
     public void createUserWithVeryShortName() {
@@ -46,10 +33,6 @@ public class UserTest {
         Set<ConstraintViolation<User>> constraintViolations = validator.validate(user);
 
         assertEquals(1, constraintViolations.size());
-        assertEquals(
-                "size must be between 2 and 30",
-                constraintViolations.iterator().next().getMessage()
-        );
     }
 
     @Test
@@ -60,10 +43,6 @@ public class UserTest {
         Set<ConstraintViolation<User>> constraintViolations = validator.validate(user);
 
         assertEquals(1, constraintViolations.size());
-        assertEquals(
-                "size must be between 2 and 30",
-                constraintViolations.iterator().next().getMessage()
-        );
     }
 
     @Test

@@ -17,6 +17,8 @@
 
     <link href='http://fonts.googleapis.com/css?family=Droid+Serif' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Dancing+Script' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Marck+Script&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
     <link rel="stylesheet" href="/restaurant/resources/css/template.css" media="screen" />
     <link rel="stylesheet" href="/restaurant/resources/css/colorbox.css" />
     <link rel="stylesheet" href="/restaurant/resources/css/options.css" />
@@ -64,6 +66,18 @@
                         </form>
                     </c:if>
 
+                    <spring:message code="pay" var="pay"/>
+
+                    <c:if test="${order.status == 'ACCEPTED'}">
+                        <form action="/restaurant/jsp/order/payorder" method="post">
+                            <input type="hidden" name="orderid" value="${order.id}">
+                            <input type="submit" value="${pay}">
+                            <input type="hidden"
+                                   name="${_csrf.parameterName}"
+                                   value="${_csrf.token}"/>
+                        </form>
+                    </c:if>
+
                     <spring:message code="resend" var="resend"/>
                     <c:if test="${order.status == 'DECLINED' or order.status == 'CANCELLED'}">
                         <form action="/restaurant/jsp/order/resendorder" method="post">
@@ -86,29 +100,6 @@
 
 
                 </td>
-                <%--<table border="1">--%>
-                    <%--<thead><tr>--%>
-                        <%--<th>MEAL</th>--%>
-                        <%--<th>TYPE</th>--%>
-                        <%--<th>OUT</th>--%>
-                        <%--<th>MEASURE</th>--%>
-                        <%--<th>PRICE</th>--%>
-                        <%--<th>QUANTITY</th>--%>
-                    <%--</tr></thead>--%>
-
-                    <%--<c:forEach var="entry" items="${order.meals}">--%>
-                        <%--<tr>--%>
-                            <%--<td>${entry.key.name}</td>--%>
-                            <%--<td>${entry.key.mealType}</td>--%>
-                            <%--<td>${entry.key.out}</td>--%>
-                            <%--<td>${entry.key.measureType}</td>--%>
-                            <%--<td>${entry.key.price}</td>--%>
-                            <%--<td>${entry.value}</td>--%>
-                        <%--</tr>--%>
-
-                    <%--</c:forEach>--%>
-                <%--</table>--%>
-
                 </tr>
     </c:forEach>
     </table>
@@ -151,7 +142,7 @@
             <div id="errors">
                 <ul>
                     <c:forEach var="error" items="${errors}">
-                        <li>${error}</li>
+                        <li><spring:message code="${error}"/></li>
                     </c:forEach>
                 </ul>
             </div>
@@ -168,16 +159,16 @@
                value="${_csrf.token}"/>
     </form>
 
+    <spring:message code="log_out" var="logout"/>
+    <c:url var="logoutUrl" value="/logout"/>
+    <form class="out" method="post" action="${logoutUrl}">
+        <input type="submit" value="${logout}" />
+        <input type="hidden"
+               name="${_csrf.parameterName}"
+               value="${_csrf.token}"/>
+    </form>
 
 </div>
-<spring:message code="log_out" var="logout"/>
-<c:url var="logoutUrl" value="/logout"/>
-<form method="post" action="${logoutUrl}">
-  <input type="submit" value="${logout}" />
-  <input type="hidden"
-         name="${_csrf.parameterName}"
-         value="${_csrf.token}"/>
-</form>
 </div>
 </body>
 </html>

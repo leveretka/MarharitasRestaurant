@@ -69,8 +69,9 @@ public abstract class AbstractController {
     protected Order getOrderById(Long id) {
         if (id<=0) throw new IllegalArgumentException("ID<0");
         Order order = orderService.getOrderById(id);
-        if (order == null)
-            throw new NotFoundOrderException("Meal id" + id + " not found" );
+        if (order == null) {
+            throw new NotFoundOrderException("Meal id" + id + " not found");
+        }
         return order;
 
     }

@@ -9,6 +9,8 @@
 
         <link href='http://fonts.googleapis.com/css?family=Droid+Serif' rel='stylesheet' type='text/css'>
         <link href='http://fonts.googleapis.com/css?family=Dancing+Script' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Marck+Script&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
         <link rel="stylesheet" href="/restaurant/resources/css/template.css" media="screen" />
         <link rel="stylesheet" href="/restaurant/resources/css/colorbox.css" />
         <link rel="stylesheet" href="/restaurant/resources/css/options.css" />

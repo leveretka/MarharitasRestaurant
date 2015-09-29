@@ -35,6 +35,7 @@ public class CustomerController {
     @Autowired
     private EntityValidator registrationValidator;
 
+
     @ModelAttribute("customer")
     public Customer populateCustomer() {
         return new Customer();

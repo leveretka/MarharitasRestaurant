@@ -396,7 +396,8 @@ h6 { font-size: 1.0em; color: #FAB502;}
 	float: left;
 	z-index: 2;
 	overflow: hidden;
-	width: 65%;
+	width: 70%;
+	text-align: center;
 }
 #carte-1
 {
@@ -432,21 +433,26 @@ h6 { font-size: 1.0em; color: #FAB502;}
 	float: left;
 	z-index: 2;
 	overflow: hidden;
-	width: 30%;
+	width: 28%;
 	text-align: right;
 	color: #FAB502;
-	margin-right: 5%;
+	margin-left: 2%;
 
 }
 
 #main table
 {
-	font-size: 14px;
+	font-size: 12px;
 }
 
 #personal form
 {
-	margin-top: 60px;
+	margin-top: 80px;
+}
+
+#personal form.out
+{
+	margin-top: 0px;
 }
 #order_items
 {

@@ -22,15 +22,15 @@ public class Address {
     @Column(name = "DISTRICT")
     private String district;
 
-    @NotEmpty(message = "City required")
+    @NotEmpty(message = "city_required")
     @Column(name = "CITY")
     private String city;
 
-    @NotEmpty(message = "Street required")
+    @NotEmpty(message = "street_required")
     @Column(name = "STREET")
     private String street;
 
-    @NotEmpty(message = "Building required")
+    @NotEmpty(message = "building_required")
     @Column(name = "BUILDING")
     private String building;
 

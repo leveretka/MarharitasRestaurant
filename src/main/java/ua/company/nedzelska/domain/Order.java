@@ -135,7 +135,8 @@ public class Order {
         ACCEPTED,
         CANCELLED,
         DECLINED,
-        DELIVERED
+        DELIVERED,
+        PAYED
     }
 
     public OrderStatus getStatus() {

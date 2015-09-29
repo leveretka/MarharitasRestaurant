@@ -15,11 +15,11 @@ public class User {
     @Column(name = "USER_ID")
     private Long id;
 
-    @Size(min=2, max=30, message = "Login required at least 2 characters")
+    @Size(min=2, max=30, message = "invalid_login")
     @Column(name = "USER_NAME")
     private String name;
 
-    @Size(min=1, max=30, message = "Password required at least 1 character")
+    @Size(min=1, max=30, message = "invalid_password")
     @Column(name = "PASSWORD")
     private String pass;
 

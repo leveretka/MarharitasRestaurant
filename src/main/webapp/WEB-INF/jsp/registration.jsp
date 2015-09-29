@@ -17,6 +17,8 @@
 
     <link href='http://fonts.googleapis.com/css?family=Droid+Serif' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Dancing+Script' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Marck+Script&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
     <link rel="stylesheet" href="/restaurant/resources/css/template.css" media="screen" />
     <link rel="stylesheet" href="/restaurant/resources/css/colorbox.css" />
     <link rel="stylesheet" href="/restaurant/resources/css/options.css" />
@@ -26,8 +28,10 @@
     <div id="carte-1">
     <div id="registration">
         <h1><spring:message code="registration"/></h1>
-        <%--<a href="?locale=en">en</a>--%>
-        <%--<a href="?locale=uk">uk</a>--%>
+        <c:if test="${errors == null}">
+            <a href="?locale=en">en</a>
+            <a href="?locale=uk">uk</a>
+        </c:if>
         <c:set var="loc" value="${pageContext.response.locale}"/>
 
         <sec:authorize access="isAnonymous()">
@@ -85,7 +89,7 @@
             <div id="error-panel">
                 <ul>
                     <c:forEach var="error" items="${errors}">
-                        <li>${error}</li>
+                        <li><spring:message code="${error}"/></li>
                     </c:forEach>
                 </ul>
             </div>

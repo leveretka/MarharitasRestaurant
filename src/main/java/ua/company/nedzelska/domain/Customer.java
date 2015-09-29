@@ -15,11 +15,11 @@ public class Customer {
     @Column(name = "CUSTOMER_ID")
     private Long id;
 
-    @Size(min = 2, message = "First name must consist of more than 2 characters")
+    @Size(min = 2, message = "invalid_first_name")
     @Column(name = "FIRST_NAME")
     private String firstName;
 
-    @Size(min = 2, message = "Last name must consist of more than 2 characters")
+    @Size(min = 2, message = "invalid_last_name")
     @Column(name = "LAST_NAME")
     private String lastName;
 

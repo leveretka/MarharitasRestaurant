@@ -17,6 +17,8 @@
 
     <link href='http://fonts.googleapis.com/css?family=Droid+Serif' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Dancing+Script' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Marck+Script&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
     <link rel="stylesheet" href="/restaurant/resources/css/template.css" media="screen" />
     <link rel="stylesheet" href="/restaurant/resources/css/colorbox.css" />
     <link rel="stylesheet" href="/restaurant/resources/css/options.css" />
@@ -81,7 +83,16 @@
                 </form>
             </c:if>
 
-            <c:if test="${order.status == 'ACCEPTED'}">
+            <c:if test="${order.status == 'PAYED'}">
+                <form action="/restaurant/jsp/admin/order/deliverorder" method="post">
+                    <input type="hidden" name="orderid" value="${order.id}">
+                    <input type="submit" value="${deliver}">
+                    <input type="hidden"
+                           name="${_csrf.parameterName}"
+                           value="${_csrf.token}"/>
+                </form>
+            </c:if>
+            <c:if test="${order.status == 'ACCEPTED' and order.customer==null}">
                 <form action="/restaurant/jsp/admin/order/deliverorder" method="post">
                     <input type="hidden" name="orderid" value="${order.id}">
                     <input type="submit" value="${deliver}">
@@ -125,9 +136,10 @@
 </c:forEach>
 </table>
 <c:url var="logoutUrl" value="/logout"/>
+    <spring:message code="log_out" var="logout"/>
 <sec:authorize access="isFullyAuthenticated()">
     <form method="post" action="${logoutUrl}">
-        <input type="submit" value="Log out" />
+        <input type="submit" value="${logout}" />
         <input type="hidden"
                name="${_csrf.parameterName}"
                value="${_csrf.token}"/>

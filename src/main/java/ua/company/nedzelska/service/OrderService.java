@@ -23,6 +23,8 @@ public interface OrderService {
 
     Order deliver (Order o);
 
+    Order pay (Order o);
+
     Order getOrderById(Long id);
 
     Order resend(Order order);

@@ -51,8 +51,18 @@ public class PriceCalculator {
             total *= 0.8;
         }
 
-        return total;
+        return truncate(total,2);
 
+    }
+
+    private static double truncate(double number, int precision) {
+        double prec = Math.pow(10, precision);
+        int integerPart = (int) number;
+        double fractionalPart = number - integerPart;
+        fractionalPart *= prec;
+        int fractPart = (int) fractionalPart;
+        fractionalPart = (double) (integerPart) + (double) (fractPart)/prec;
+        return fractionalPart;
     }
 
     private PriceCalculator() {

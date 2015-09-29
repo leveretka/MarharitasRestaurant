@@ -12,6 +12,7 @@ import ua.company.nedzelska.domain.*;
 import ua.company.nedzelska.service.CustomerService;
 import ua.company.nedzelska.service.OrderService;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -39,8 +40,13 @@ public class OrderController extends AbstractController{
     }
 
     @RequestMapping(value = "/addmeal", method = RequestMethod.POST)
-    public String addMealToCart(@RequestParam("mealid") Meal meal, @RequestParam("redirect") String redirect, @ModelAttribute("mealsInOrder") HashMap<Meal, Integer> mealsInOrder, Model model) {
+    public String addMealToCart(@RequestParam("mealid") Meal meal, HttpServletRequest request, @ModelAttribute("mealsInOrder") HashMap<Meal, Integer> mealsInOrder, Model model) {
 
+        String s = request.getHeader("Referer");
+
+        if (s.contains("submitorder")) {
+            s = "/jsp/order/previewOrder";
+        }
 
         if  (mealsInOrder == null) {
             mealsInOrder = new HashMap<>();
@@ -53,7 +59,7 @@ public class OrderController extends AbstractController{
 
         model.addAttribute("mealsInOrder", mealsInOrder);
 
-        return "redirect:/jsp/" + redirect;
+        return "redirect:" + s;
     }
 
     @RequestMapping(value = "/previewOrder", method = RequestMethod.POST)
@@ -165,6 +171,15 @@ public class OrderController extends AbstractController{
 
     }
 
+    @RequestMapping(value = "/payorder", method = RequestMethod.POST)
+    public String payOrder(@RequestParam("orderid") Order order, Model model) {
+        if (order.getStatus().equals(Order.OrderStatus.ACCEPTED)) {
+            orderService.pay(order);
+        }
+        model.addAttribute("orders", orderService.getAllOrders());
+        return "redirect:/jsp/cust/cabinet";
+
+    }
     @Secured("ROLE_USER")
     @RequestMapping(value = "/{orderid}", method = RequestMethod.GET)
     public String detailOrder(@PathVariable("orderid") Long id, Model model) {

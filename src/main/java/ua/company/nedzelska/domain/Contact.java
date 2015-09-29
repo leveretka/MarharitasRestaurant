@@ -19,12 +19,12 @@ public class Contact {
     @Column(name = "CONTACT_ID")
     private Long id;
 
-    @Pattern(regexp = "^[0-9+\\-\\s]+$", message = "Wrong telephone number")
+    @Pattern(regexp = "^[0-9+\\-\\s]+$", message = "wrong_telephone")
     @Column(name = "TELEPHONE")
     private String tel;
 
-    @NotEmpty(message = "Email required")
-    @Email(message = "Wrong E-mail")
+    @NotEmpty(message = "e-mail_required")
+    @Email(message = "wrong_e-mail")
     @Column(name = "E_MAIL")
     private String email;
 
